@@ -9,7 +9,7 @@ namespace Application.Features.Users.Services;
 /// </summary>
 public class UserService: IUserService
 {
-    private IUserRepository _repository;
+    private readonly IUserRepository _repository;
 
     /// <summary>
     /// Constructor using dependency injection to get a repository.

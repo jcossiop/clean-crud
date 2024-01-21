@@ -9,11 +9,10 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+// Add our own scoped services
 builder.Services.AddScoped<IRepresentativeService, RepresentativeService>();
 builder.Services.AddScoped<IRepresentativeRepository, RepresentativeRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -28,6 +27,7 @@ builder.Services.AddSwaggerGen(options =>
         Title = "Clean Architecture API",
         Description = "Clean Architecture Sample API",
     });
+    // Pull documentation from XML
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });

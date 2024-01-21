@@ -1,8 +1,5 @@
-﻿using Application.Features.Representatives.Abstractions;
-using Application.Features.Representatives.Services;
-using Application.Features.Users.Abstractions;
+﻿using Application.Features.Users.Abstractions;
 using Application.Features.Users.DTOs;
-using Domain.Representatives;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;

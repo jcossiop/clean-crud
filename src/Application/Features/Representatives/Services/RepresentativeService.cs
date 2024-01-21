@@ -9,7 +9,7 @@ namespace Application.Features.Representatives.Services;
 /// </summary>
 public class RepresentativeService : IRepresentativeService
 {
-    private IRepresentativeRepository _repository;
+    private readonly IRepresentativeRepository _repository;
 
     /// <summary>
     /// Constructor using dependency injection to get a repository.
