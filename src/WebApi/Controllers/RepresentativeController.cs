@@ -29,6 +29,8 @@ public class RepresentativeController : ControllerBase
     /// </summary>
     /// <returns>List of representatives</returns>
     [HttpGet(Name = "GetAll")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<RepresentativeDto>))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<List<RepresentativeDto>>> GetAll()
     {
         var representativeList = await _representativeService.GetAll();
@@ -42,7 +44,10 @@ public class RepresentativeController : ControllerBase
     /// <returns>Stored Representative.</returns>
     [Authorize]
     [HttpPost]
-    public async Task<RepresentativeDto> Add(RepresentativeDto representative)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RepresentativeDto))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<RepresentativeDto>> Add(RepresentativeDto representative)
     {
         return await _representativeService.Add(representative);
     }
@@ -54,9 +59,18 @@ public class RepresentativeController : ControllerBase
     /// <returns>Task.</returns>
     [Authorize]
     [HttpDelete("{id}")]
-    public async Task Delete(int id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult> Delete(int id)
     {
+        if (id < 0)
+            return BadRequest("Invalid Representative Id.");
+
         await _representativeService.Delete(id);
+
+        return NoContent();
     }
 
     /// <summary>
@@ -66,7 +80,10 @@ public class RepresentativeController : ControllerBase
     /// <returns>Modified Representative.</returns>
     [Authorize]
     [HttpPut]
-    public async Task<RepresentativeDto> Update(RepresentativeDto representative)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RepresentativeDto))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<RepresentativeDto>> Update(RepresentativeDto representative)
     {
         return await _representativeService.Update(representative);
     }
