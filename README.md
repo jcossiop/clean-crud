@@ -8,9 +8,10 @@ Clean CRUD exercise
 
 The idea with this execise is to create a simple application that follows **Clean Architecture** principles and **TDD** methodologies.
 
-## Assumptions
+## Assumptions/ Decissions
 
 - For simplicity purposes, a user can register to the app and have immediate access to restricted actions. No user activation is required by an admin user.
+- Also for simplicity, I am not using Automapper for mappings. But normally this would be benefitial for larger projects.
 ## Use Cases
 
 1. As a practice user I want to be able to sign in the application in order to have access to restricted actions on it.
