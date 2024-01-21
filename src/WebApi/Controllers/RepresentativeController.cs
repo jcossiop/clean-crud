@@ -42,7 +42,7 @@ public class RepresentativeController : ControllerBase
     /// </summary>
     /// <param name="representativeDto">Representative to persist.</param>
     /// <returns>Stored Representative.</returns>
-    [Authorize]
+    //[Authorize]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RepresentativeDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -57,7 +57,7 @@ public class RepresentativeController : ControllerBase
     /// </summary>
     /// <param name="id">Id of the Representative to delete.</param>
     /// <returns>Task.</returns>
-    [Authorize]
+    //[Authorize]
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -78,7 +78,7 @@ public class RepresentativeController : ControllerBase
     /// </summary>
     /// <param name="representativeDto">Representative to modify.</param>
     /// <returns>Modified Representative.</returns>
-    [Authorize]
+    //[Authorize]
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RepresentativeDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

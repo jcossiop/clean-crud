@@ -8,6 +8,8 @@ Clean CRUD exercise
 
 The idea with this execise is to create a simple application that follows **Clean Architecture** principles and **TDD** methodologies.
 
+The imaginary scenario is for a Medical Practice Center that wishes to have a way to manage Representatives. Be it a Medical Science Liason, Field Reimbursement Officers or Sales Reps.
+
 ## Assumptions/ Decissions
 
 - For simplicity purposes:
