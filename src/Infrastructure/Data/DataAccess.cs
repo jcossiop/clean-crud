@@ -30,7 +30,8 @@ public class DataAccess
 
             string usersTableCommand = "CREATE TABLE IF NOT EXISTS Users" +
                 "(UserName     TEXT NOT NULL PRIMARY KEY, " +
-                " PasswordHash TEXT NOT NULL" +
+                " PasswordHash TEXT NOT NULL," +
+                " Created      INTEGER" +
                 ")";
 
             var usersCreateTable = new SqliteCommand(usersTableCommand, db);

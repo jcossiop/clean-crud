@@ -1,5 +1,7 @@
 using Application.Features.Representatives.Abstractions;
 using Application.Features.Representatives.Services;
+using Application.Features.Users.Abstractions;
+using Application.Features.Users.Services;
 using Infrastructure.Repositories;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -14,6 +16,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IRepresentativeService, RepresentativeService>();
 builder.Services.AddScoped<IRepresentativeRepository, RepresentativeRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Swagger
 builder.Services.AddSwaggerGen(options =>
@@ -21,8 +25,8 @@ builder.Services.AddSwaggerGen(options =>
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
-        Title = "CA API",
-        Description = "CA Sample API",
+        Title = "Clean Architecture API",
+        Description = "Clean Architecture Sample API",
     });
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));

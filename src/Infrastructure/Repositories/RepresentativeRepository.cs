@@ -1,6 +1,5 @@
 ﻿using Application.Features.Representatives.Abstractions;
 using Domain.Representatives;
-using Microsoft.Data.Sqlite;
 
 namespace Infrastructure.Repositories;
 

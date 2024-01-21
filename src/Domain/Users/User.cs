@@ -2,7 +2,7 @@
 
 namespace Domain.Users;
 
-internal class User
+public class User
 {
     /// <summary>
     /// User name.
@@ -15,4 +15,10 @@ internal class User
     /// </summary>
     [Required]
     public string PasswordHash { get; set; }
+
+    /// <summary>
+    /// Created Date.
+    /// </summary>
+    public int Created { get; set; }
+
 }

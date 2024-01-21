@@ -9,7 +9,7 @@ namespace WebApi.Controllers;
 /// Controller for all Representative methods.
 /// </summary>
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 [Produces("application/json")]
 public class RepresentativeController : ControllerBase
 {
@@ -18,7 +18,7 @@ public class RepresentativeController : ControllerBase
     /// <summary>
     /// Constructor injecting the service
     /// </summary>
-    /// <param name="representativeService"></param>
+    /// <param name="representativeService">Injected Service.</param>
     public RepresentativeController(IRepresentativeService representativeService)
     {
         _representativeService = representativeService;
@@ -40,16 +40,16 @@ public class RepresentativeController : ControllerBase
     /// <summary>
     /// Add a Representative.
     /// </summary>
-    /// <param name="representative">Representative to persist.</param>
+    /// <param name="representativeDto">Representative to persist.</param>
     /// <returns>Stored Representative.</returns>
     [Authorize]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RepresentativeDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<RepresentativeDto>> Add(RepresentativeDto representative)
+    public async Task<ActionResult<RepresentativeDto>> Add(RepresentativeDto representativeDto)
     {
-        return await _representativeService.Add(representative);
+        return await _representativeService.Add(representativeDto);
     }
 
     /// <summary>
@@ -76,15 +76,15 @@ public class RepresentativeController : ControllerBase
     /// <summary>
     /// Modify a Representative.
     /// </summary>
-    /// <param name="representative">Representative to modify.</param>
+    /// <param name="representativeDto">Representative to modify.</param>
     /// <returns>Modified Representative.</returns>
     [Authorize]
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RepresentativeDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<RepresentativeDto>> Update(RepresentativeDto representative)
+    public async Task<ActionResult<RepresentativeDto>> Update(RepresentativeDto representativeDto)
     {
-        return await _representativeService.Update(representative);
+        return await _representativeService.Update(representativeDto);
     }
 }
