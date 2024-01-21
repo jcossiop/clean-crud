@@ -4,6 +4,7 @@ namespace Application.Features.Representatives.Abstractions;
 
 /// <summary>
 /// Representative repository interface.
+/// A repository that defines logic for how this feature needs to interact with the persistence engine.
 /// </summary>
 public interface IRepresentativeRepository
 {

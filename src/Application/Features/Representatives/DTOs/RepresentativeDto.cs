@@ -4,6 +4,7 @@ namespace Application.Features.Representatives.DTOs;
 
 /// <summary>
 /// DTO used for interacting with the outer layer.
+/// This is what can be exposed externally, containing precisely the properties needed by external consumers of the API.
 /// </summary>
 public class RepresentativeDto
 {

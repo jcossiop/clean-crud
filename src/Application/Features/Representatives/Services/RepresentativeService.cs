@@ -4,6 +4,9 @@ using Application.Features.Representatives.Mappings;
 
 namespace Application.Features.Representatives.Services;
 
+/// <summary>
+/// Implementation of the application logic for this feature. As defined in the abstractions folder
+/// </summary>
 public class RepresentativeService : IRepresentativeService
 {
     private IRepresentativeRepository _repository;

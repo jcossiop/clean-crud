@@ -3,7 +3,8 @@
 namespace Application.Features.Representatives.Abstractions;
 
 /// <summary>
-/// Use DTOs for contracts. Use case is similar to the repository (in this case)
+/// Use DTOs for contracts. Use case is similar to the repository (in this case).
+/// A service that defines application logic related to this feature
 /// </summary>
 public interface IRepresentativeService
 {

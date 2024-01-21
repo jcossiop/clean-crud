@@ -4,7 +4,8 @@ using Domain.Representatives;
 namespace Application.Features.Representatives.Mappings;
 
 /// <summary>
-/// Allow mapping for domain entities.
+/// Allow mapping for domain entities to DTOs and vice versa.
+/// Can be done with automapper as well.
 /// </summary>
 public static class RepresentativeMappings
 {
