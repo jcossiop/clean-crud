@@ -49,7 +49,7 @@ public class Representative
     /// <summary>
     /// Date record created.
     /// </summary>
-    public int Created { get; set; }
+    public long Created { get; set; }
 
     /// <summary>
     /// User who modified this record.
@@ -59,5 +59,5 @@ public class Representative
     /// <summary>
     /// Modified date.
     /// </summary>
-    public int? Modified { get; set; }
+    public long? Modified { get; set; }
 }

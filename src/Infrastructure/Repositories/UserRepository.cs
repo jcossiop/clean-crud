@@ -17,7 +17,8 @@ public class UserRepository : IUserRepository
     {
         // Connect to the repository
 
-        // Gather missing information (Stored Date)
+        // Gather missing information (Created Date)
+        user.Created = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
 
         // Store the entity
 

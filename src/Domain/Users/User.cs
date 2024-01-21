@@ -19,6 +19,6 @@ public class User
     /// <summary>
     /// Created Date.
     /// </summary>
-    public int Created { get; set; }
+    public long Created { get; set; }
 
 }

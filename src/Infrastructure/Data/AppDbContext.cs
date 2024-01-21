@@ -2,7 +2,10 @@
 
 namespace Infrastructure.Data;
 
-public class DataAccess
+/// <summary>
+/// App db context using SqLite (in memory) for persistence.
+/// </summary>
+public class AppDbContext
 {
     public static void InitializeDatabase()
     {
@@ -10,6 +13,7 @@ public class DataAccess
         {
             db.Open();
 
+            // Representatives table
             string representativesTableCommand = "CREATE TABLE IF NOT EXISTS Representatives" + 
                 "(Id         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, " +
                 " Name       TEXT NOT NULL," +
@@ -23,19 +27,16 @@ public class DataAccess
                 " ModifiedBy TEXT," +
                 " Modified   INTEGER" +
                 ")";
-
             var representativesCreateTable = new SqliteCommand(representativesTableCommand, db);
-
             representativesCreateTable.ExecuteReader();
 
+            // Users table
             string usersTableCommand = "CREATE TABLE IF NOT EXISTS Users" +
                 "(UserName     TEXT NOT NULL PRIMARY KEY, " +
                 " PasswordHash TEXT NOT NULL," +
                 " Created      INTEGER" +
                 ")";
-
             var usersCreateTable = new SqliteCommand(usersTableCommand, db);
-
             usersCreateTable.ExecuteReader();
 
         }
