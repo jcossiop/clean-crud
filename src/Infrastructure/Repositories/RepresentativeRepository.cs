@@ -1,4 +1,5 @@
-﻿using Application.Features.Representatives.Abstractions;
+﻿using Application.Common.Interfaces;
+using Application.Features.Representatives.Abstractions;
 using Domain.Representatives;
 
 namespace Infrastructure.Repositories;
@@ -8,7 +9,22 @@ namespace Infrastructure.Repositories;
 /// </summary>
 public class RepresentativeRepository : IRepresentativeRepository
 {
-    public Task<List<Representative>> GetAll()
+    private readonly IAppDbContext _appDbContext;
+
+    /// <summary>
+    /// Contructor for injecting the db context
+    /// </summary>
+    /// <param name="appDbContext">Injected context</param>
+    public RepresentativeRepository(IAppDbContext appDbContext)
+    {
+        _appDbContext = appDbContext;
+    }
+
+    /// <summary>
+    /// Get all representatives.
+    /// </summary>
+    /// <returns>List of Representatives.</returns>
+    public async Task<List<Representative>> GetAll()
     {
         var dummyList = new List<Representative>
         {
@@ -40,42 +56,32 @@ public class RepresentativeRepository : IRepresentativeRepository
                 Brands = "Hemlibre, Cellcept"
             }
         };
-        return Task.FromResult<List<Representative>>(dummyList);
+        //return Task.FromResult<List<Representative>>(dummyList);
+
+        return await _appDbContext.GetRepresentatives();
     }
 
-    public Task<Representative> Add(Representative representative)
+    public async Task<Representative> Add(Representative representative)
     {
-        // Connect to the repository
-
         // Gather missing information (Created Date and whom)
         representative.Created = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
-
+        representative.CreatedBy = "TBD";
         // Store the entity
-
-        // Return the stored entity
-        return Task.FromResult<Representative>(representative);
+        return await _appDbContext.AddRepresentative(representative);
     }
 
-    public Task<Representative> Update(Representative representative)
+    public async Task<Representative> Update(Representative representative)
     {
-        // Connect to the repository
-
         // Gather missing information (Updated Date and whom)
         representative.Modified = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
-
-        // Store the entity
-
-        // Return the stored entity
-        return Task.FromResult<Representative>(representative);
+        representative.ModifiedBy = "TBD";
+        // Update the entity
+        return await _appDbContext.UpdateRepresentative(representative);
     }
 
-    public Task Delete(int representativeId)
+    public async Task Delete(int representativeId)
     {
-        // Connect to the repository
-
         // Remove the entity
-
-        // Return
-        return Task.CompletedTask;
+        await _appDbContext.DeleteRepresentative(representativeId);
     }
 }

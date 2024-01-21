@@ -1,45 +1,216 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using Application.Common.Interfaces;
+using Domain.Representatives;
+using Microsoft.Data.Sqlite;
+using System.Text;
 
 namespace Infrastructure.Data;
 
 /// <summary>
 /// App db context using SqLite (in memory) for persistence.
 /// </summary>
-public class AppDbContext
+public class AppDbContext: IAppDbContext
 {
-    public static void InitializeDatabase()
+    private SqliteConnection? _connection;
+
+    /// <summary>
+    /// Initialize the memory database on constructor
+    /// </summary>
+    public AppDbContext()
     {
-        using (var db = new SqliteConnection("Data Source=:memory:"))
+        InitializeDatabase();
+    }
+
+    ~AppDbContext()
+    {
+        if (_connection != null)
+            _connection.Close();
+    }
+
+    /// <summary>
+    /// Initialize database with the needed tables.
+    /// </summary>
+    void InitializeDatabase()
+    {
+        _connection = new SqliteConnection("Data Source=:memory:");
+        _connection.Open();
+
+        // Representatives table
+        var repsTableSb = new StringBuilder("CREATE TABLE IF NOT EXISTS Representatives");
+        repsTableSb.Append("(Id         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, ");
+        repsTableSb.Append(" Name       TEXT NOT NULL,");
+        repsTableSb.Append(" Email      TEXT,");
+        repsTableSb.Append(" CellPhone  TEXT,");
+        repsTableSb.Append(" Role       TEXT,");
+        repsTableSb.Append(" Company    TEXT,");
+        repsTableSb.Append(" Brands     TEXT,");
+        repsTableSb.Append(" CreatedBy  TEXT,");
+        repsTableSb.Append(" Created    INTEGER,");
+        repsTableSb.Append(" ModifiedBy TEXT,");
+        repsTableSb.Append(" Modified   INTEGER)");
+        using var representativesCreateTable = new SqliteCommand(repsTableSb.ToString(), _connection);
+        representativesCreateTable.ExecuteReader();
+
+        // Users table
+        var usersTableSb = new StringBuilder("CREATE TABLE IF NOT EXISTS Users");
+        usersTableSb.Append("(UserName     TEXT NOT NULL PRIMARY KEY, ");
+        usersTableSb.Append(" PasswordHash TEXT NOT NULL,");
+        usersTableSb.Append(" Created      INTEGER)");
+        using var usersCreateTable = new SqliteCommand(usersTableSb.ToString(), _connection);
+        usersCreateTable.ExecuteReader();
+
+        // TODO: Remove Temp add dummy data
+        using var dataCommand = new SqliteCommand("INSERT INTO Representatives (Name, Email, CellPhone, Role, Company, Brands) values (@Name, @Email, @CellPhone, @Role, @Company, @Brands);", _connection);
+        dataCommand.Parameters.AddWithValue("@Name", "Shelly Smith");
+        dataCommand.Parameters.AddWithValue("@CellPhone", "(217) 436-2287");
+        dataCommand.Parameters.AddWithValue("@Email", "SSmith@lilly.com");
+        dataCommand.Parameters.AddWithValue("@Role", "Sales Representative");
+        dataCommand.Parameters.AddWithValue("@Company", "Eli Lilly");
+        dataCommand.Parameters.AddWithValue("@Brands", "Trulicity, Verzenio, Emgality");
+        dataCommand.ExecuteNonQuery();
+
+        using var dataCommand2 = new SqliteCommand("INSERT INTO Representatives (Name, Email, CellPhone, Role, Company, Brands) values (@Name, @Email, @CellPhone, @Role, @Company, @Brands);", _connection);
+        dataCommand2.Parameters.AddWithValue("@Name", "Terry Lawson");
+        dataCommand2.Parameters.AddWithValue("@CellPhone", "(917) 446-0087");
+        dataCommand2.Parameters.AddWithValue("@Email", "Terry@Bayer.com");
+        dataCommand2.Parameters.AddWithValue("@Role", "Sales Representative");
+        dataCommand2.Parameters.AddWithValue("@Company", "Bayer");
+        dataCommand2.Parameters.AddWithValue("@Brands", "Glucobay, Adalat, Adempas");
+        dataCommand2.ExecuteNonQuery();
+
+        using var dataCommand3 = new SqliteCommand("INSERT INTO Representatives (Name, Email, CellPhone, Role, Company, Brands) values (@Name, @Email, @CellPhone, @Role, @Company, @Brands);", _connection);
+        dataCommand3.Parameters.AddWithValue("@Name", "Emily Dickinson");
+        dataCommand3.Parameters.AddWithValue("@CellPhone", "(314) 501-3342");
+        dataCommand3.Parameters.AddWithValue("@Email", "Emily@Roche.com");
+        dataCommand3.Parameters.AddWithValue("@Role", "Sales Representative");
+        dataCommand3.Parameters.AddWithValue("@Company", "Roche");
+        dataCommand3.Parameters.AddWithValue("@Brands", "Hemlibre, Cellcept");
+        dataCommand3.ExecuteNonQuery();
+
+    }
+
+    /// <summary>
+    /// Get a representative.
+    /// </summary>
+    /// <param name="id">Representative Id.</param>
+    /// <returns>Representative.</returns>
+    public async Task<Representative> GetRepresentative(long id)
+    {
+        var result = new Representative();
+        using var readCommand = new SqliteCommand("SELECT * FROM Representatives WHERE Id = @Id", _connection);
+        readCommand.Parameters.AddWithValue("@Id", id);
+        using var reader = await readCommand.ExecuteReaderAsync();
+        if (reader.Read())
         {
-            db.Open();
-
-            // Representatives table
-            string representativesTableCommand = "CREATE TABLE IF NOT EXISTS Representatives" + 
-                "(Id         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, " +
-                " Name       TEXT NOT NULL," +
-                " Email      TEXT," +
-                " CellPhone  TEXT," +
-                " Role       TEXT," +
-                " Company    TEXT," +
-                " Brands     TEXT," +
-                " CreatedBy  TEXT," +
-                " Created    INTEGER," +
-                " ModifiedBy TEXT," +
-                " Modified   INTEGER" +
-                ")";
-            var representativesCreateTable = new SqliteCommand(representativesTableCommand, db);
-            representativesCreateTable.ExecuteReader();
-
-            // Users table
-            string usersTableCommand = "CREATE TABLE IF NOT EXISTS Users" +
-                "(UserName     TEXT NOT NULL PRIMARY KEY, " +
-                " PasswordHash TEXT NOT NULL," +
-                " Created      INTEGER" +
-                ")";
-            var usersCreateTable = new SqliteCommand(usersTableCommand, db);
-            usersCreateTable.ExecuteReader();
-
+            result.Id = (long)reader["Id"];
+            result.Name = (string?)(reader["Name"] == DBNull.Value ? null : reader["Name"]);
+            result.CellPhone = (string?)(reader["CellPhone"] == DBNull.Value ? null : reader["CellPhone"]);
+            result.Email = (string?)(reader["Email"] == DBNull.Value ? null : reader["Email"]);
+            result.Role = (string?)(reader["Role"] == DBNull.Value ? null : reader["Role"]);
+            result.Company = (string?)(reader["Company"] == DBNull.Value ? null : reader["Company"]);
+            result.Brands = (string?)(reader["Brands"] == DBNull.Value ? null : reader["Brands"]);
         }
+        return result;
+    }
+
+    /// <summary>
+    /// Get all representatives.
+    /// </summary>
+    /// <returns>List of Representatives.</returns>
+    public async Task<List<Representative>> GetRepresentatives()
+    {
+        var result = new List<Representative>();
+        using var readCommand = new SqliteCommand("SELECT * FROM Representatives", _connection);
+        using var reader = await readCommand.ExecuteReaderAsync();
+        while (reader.Read())
+        {
+            result.Add(new Representative
+            {
+                Id = (long)reader["Id"],
+                Name = (string?)(reader["Name"] == DBNull.Value ? null: reader["Name"]),
+                CellPhone = (string?)(reader["CellPhone"] == DBNull.Value ? null : reader["CellPhone"]),
+                Email = (string?)(reader["Email"] == DBNull.Value ? null : reader["Email"]),
+                Role = (string?)(reader["Role"] == DBNull.Value ? null : reader["Role"]),
+                Company = (string?)(reader["Company"] == DBNull.Value ? null : reader["Company"]),
+                Brands = (string?)(reader["Brands"] == DBNull.Value ? null : reader["Brands"])
+            });
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Add representative.
+    /// </summary>
+    /// <param name="representative">The element to add.</param>
+    /// <returns>The added element.</returns>
+    public async Task<Representative> AddRepresentative(Representative representative)
+    {
+        // Insert
+        var insertSb = new StringBuilder("INSERT INTO Representatives");
+        insertSb.Append("(Name, Email, CellPhone, Role, Company, Brands, CreatedBy, Created)");
+        insertSb.Append("VALUES");
+        insertSb.Append("(@Name, @Email, @CellPhone, @Role, @Company, @Brands, @CreatedBy, @Created);");
+        using var insertCommand = new SqliteCommand(insertSb.ToString(), _connection);
+        insertCommand.Parameters.AddWithValue("@Name", representative.Name);
+        insertCommand.Parameters.AddWithValue("@Email", representative.Email);
+        insertCommand.Parameters.AddWithValue("@CellPhone", representative.CellPhone);
+        insertCommand.Parameters.AddWithValue("@Role", representative.Role);
+        insertCommand.Parameters.AddWithValue("@Company", representative.Company);
+        insertCommand.Parameters.AddWithValue("@Brands", representative.Brands);
+        insertCommand.Parameters.AddWithValue("@CreatedBy", representative.CreatedBy);
+        insertCommand.Parameters.AddWithValue("@Created", representative.Created);
+        await insertCommand.ExecuteNonQueryAsync();
+
+        // Query for the last Id
+        long lastId = 1;
+        using var getMaxIdCommand = new SqliteCommand("SELECT MAX(Id) FROM Representatives;", _connection);
+        using var reader = await getMaxIdCommand.ExecuteReaderAsync();
+        if (reader.Read())
+            lastId = reader.GetInt64(0);
+
+        // Return the last entry
+        return await GetRepresentative(lastId);
+        
+    }
+
+    /// <summary>
+    /// Update representative.
+    /// </summary>
+    /// <param name="representative">The element to modify.</param>
+    /// <returns>The modified element.</returns>
+    public async Task<Representative> UpdateRepresentative(Representative representative)
+    {
+        // Update all values
+        var updateSb = new StringBuilder("UPDATE Representatives SET ");
+        updateSb.Append("Name = @Name, Email = @Email, CellPhone = @CellPhone, Role = @Role, ");
+        updateSb.Append("Company = @Company, Brands = @Brands, ModifiedBy = @ModifiedBy, Modified = @Modified ");
+        updateSb.Append("WHERE Id = @Id;");
+        using var updateCommand = new SqliteCommand(updateSb.ToString(), _connection);
+        updateCommand.Parameters.AddWithValue("@Id", representative.Id);
+        updateCommand.Parameters.AddWithValue("@Name", representative.Name);
+        updateCommand.Parameters.AddWithValue("@Email", representative.Email);
+        updateCommand.Parameters.AddWithValue("@CellPhone", representative.CellPhone);
+        updateCommand.Parameters.AddWithValue("@Role", representative.Role);
+        updateCommand.Parameters.AddWithValue("@Company", representative.Company);
+        updateCommand.Parameters.AddWithValue("@Brands", representative.Brands);
+        updateCommand.Parameters.AddWithValue("@ModifiedBy", representative.ModifiedBy);
+        updateCommand.Parameters.AddWithValue("@Modified", representative.Modified);
+        var count = await updateCommand.ExecuteNonQueryAsync();
+
+        // Return the modified entry
+        return await GetRepresentative(representative.Id);
+    }
+
+    /// <summary>
+    /// Remove a representative.
+    /// </summary>
+    /// <param name="id">The representative id to removde</param>
+    /// <returns>Task</returns>
+    public async Task DeleteRepresentative(long id)
+    {
+        // Delete
+        using var deleteCommand = new SqliteCommand("DELETE FROM Representatives WHERE Id = @Id;", _connection);
+        deleteCommand.Parameters.AddWithValue("@Id", id);
+        var count = await deleteCommand.ExecuteNonQueryAsync();
     }
 }
 

@@ -1,7 +1,9 @@
+using Application.Common.Interfaces;
 using Application.Features.Representatives.Abstractions;
 using Application.Features.Representatives.Services;
 using Application.Features.Users.Abstractions;
 using Application.Features.Users.Services;
+using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -13,6 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // Add our own scoped services
+builder.Services.AddSingleton<IAppDbContext, AppDbContext>();
 builder.Services.AddScoped<IRepresentativeService, RepresentativeService>();
 builder.Services.AddScoped<IRepresentativeRepository, RepresentativeRepository>();
 builder.Services.AddScoped<IUserService, UserService>();

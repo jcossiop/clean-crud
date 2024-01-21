@@ -8,18 +8,18 @@ public class Representative
     /// Rep Id (internal).
     /// </summary>
     [Key]
-    public int Id { get; set; }
+    public long Id { get; set; }
 
     /// <summary>
     /// Rep Name.
     /// </summary>
     [Required]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     /// <summary>
     /// Email.
     /// </summary>
-    public string Email { get; set; }
+    public string? Email { get; set; }
 
     /// <summary>
     /// Cell Phone.
@@ -44,12 +44,12 @@ public class Representative
     /// <summary>
     /// User who created this record.
     /// </summary>
-    public string CreatedBy { get; set; }
+    public string? CreatedBy { get; set; }
 
     /// <summary>
     /// Date record created.
     /// </summary>
-    public long Created { get; set; }
+    public long? Created { get; set; }
 
     /// <summary>
     /// User who modified this record.

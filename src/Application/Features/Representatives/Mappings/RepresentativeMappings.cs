@@ -18,6 +18,7 @@ public static class RepresentativeMappings
     {
         return new RepresentativeDto
         {
+            Id = representative.Id,
             Name = representative.Name,
             CellPhone = representative.CellPhone,
             Email = representative.Email,
@@ -36,6 +37,7 @@ public static class RepresentativeMappings
     {
         return new Representative
         {
+            Id = representativeDto.Id,
             Name = representativeDto.Name,
             CellPhone = representativeDto.CellPhone,
             Email = representativeDto.Email,
