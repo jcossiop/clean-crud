@@ -12,6 +12,8 @@ The idea with this execise is to create a simple application that follows **Clea
 
 - For simplicity purposes, a user can register to the app and have immediate access to restricted actions. No user activation is required by an admin user.
 - Also for simplicity, I am not using Automapper for mappings. But normally this would be benefitial for larger projects.
+- SQL Lite was used as the persistance engine. A clean DB is added to the solution.
+
 ## Use Cases
 
 1. As a practice user I want to be able to sign in the application in order to have access to restricted actions on it.
