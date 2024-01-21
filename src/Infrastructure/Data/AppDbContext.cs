@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interfaces;
 using Domain.Representatives;
+using Domain.Users;
 using Microsoft.Data.Sqlite;
 using System.Text;
 
@@ -22,8 +23,7 @@ public class AppDbContext: IAppDbContext
 
     ~AppDbContext()
     {
-        if (_connection != null)
-            _connection.Close();
+        _connection?.Close();
     }
 
     /// <summary>
@@ -211,6 +211,25 @@ public class AppDbContext: IAppDbContext
         using var deleteCommand = new SqliteCommand("DELETE FROM Representatives WHERE Id = @Id;", _connection);
         deleteCommand.Parameters.AddWithValue("@Id", id);
         var count = await deleteCommand.ExecuteNonQueryAsync();
+    }
+
+    /// <summary>
+    /// Add user.
+    /// </summary>
+    /// <param name="user">The element to add.</param>
+    /// <returns>The added element.</returns>
+    public async Task<User> AddUser(User user)
+    {
+        user.Created = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
+        // Insert
+        using var insertCommand = new SqliteCommand("INSERT INTO Users (UserName, PasswordHash, Created) VALUES (@UserName, @PasswordHash, @Created)", _connection);
+        insertCommand.Parameters.AddWithValue("@UserName", user.UserName);
+        insertCommand.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
+        insertCommand.Parameters.AddWithValue("@Created", user.Created);
+        await insertCommand.ExecuteNonQueryAsync();
+
+        // Return the last entry
+        return user;
     }
 }
 

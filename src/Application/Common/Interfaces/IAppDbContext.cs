@@ -1,4 +1,5 @@
 ﻿using Domain.Representatives;
+using Domain.Users;
 
 namespace Application.Common.Interfaces;
 
@@ -33,5 +34,12 @@ public interface IAppDbContext
     /// <param name="id">The representative id to removde</param>
     /// <returns>Task</returns>
     public Task DeleteRepresentative(long id);
+
+    /// <summary>
+    /// Add user.
+    /// </summary>
+    /// <param name="user">The element to add.</param>
+    /// <returns>The added element.</returns>
+    public Task<User> AddUser(User user);
 
 }
