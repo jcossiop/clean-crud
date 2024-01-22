@@ -20,22 +20,13 @@ public class UserRepository : IUserRepository
         _appDbContext = appDbContext;
     }
 
-
     /// <summary>
     /// Persist a user.
     /// </summary>
     /// <param name="user">User to persist.</param>
     /// <returns>Persited user.</returns>
-    public Task<User> Add(User user)
+    public async Task<User> Add(User user)
     {
-        // Connect to the repository
-
-        // Gather missing information (Created Date)
-        user.Created = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
-
-        // Store the entity
-
-        // Return the stored entity
-        return Task.FromResult<User>(user);
+        return await _appDbContext.AddUser(user);
     }
 }

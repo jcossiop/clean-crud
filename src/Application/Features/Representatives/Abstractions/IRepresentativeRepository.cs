@@ -22,7 +22,7 @@ public interface IRepresentativeRepository
     Task<Representative> Add(Representative representative);
 
     /// <summary>
-    /// Update (patch) a representative.
+    /// Update a representative.
     /// </summary>
     /// <param name="representative">Representative to update.</param>
     /// <returns>Updated representative.</returns>

@@ -2,6 +2,7 @@
 using Domain.Representatives;
 using Domain.Users;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Configuration;
 using System.Text;
 
 namespace Infrastructure.Data;
@@ -12,12 +13,14 @@ namespace Infrastructure.Data;
 public class AppDbContext: IAppDbContext
 {
     private SqliteConnection? _connection;
+    private IConfiguration _config;
 
     /// <summary>
     /// Initialize the memory database on constructor
     /// </summary>
-    public AppDbContext()
+    public AppDbContext(IConfiguration config)
     {
+        _config = config;
         InitializeDatabase();
     }
 
@@ -58,34 +61,40 @@ public class AppDbContext: IAppDbContext
         using var usersCreateTable = new SqliteCommand(usersTableSb.ToString(), _connection);
         usersCreateTable.ExecuteReader();
 
-        // TODO: Remove Temp add dummy data
-        using var dataCommand = new SqliteCommand("INSERT INTO Representatives (Name, Email, CellPhone, Role, Company, Brands) values (@Name, @Email, @CellPhone, @Role, @Company, @Brands);", _connection);
-        dataCommand.Parameters.AddWithValue("@Name", "Shelly Smith");
-        dataCommand.Parameters.AddWithValue("@CellPhone", "(217) 436-2287");
-        dataCommand.Parameters.AddWithValue("@Email", "SSmith@lilly.com");
-        dataCommand.Parameters.AddWithValue("@Role", "Sales Representative");
-        dataCommand.Parameters.AddWithValue("@Company", "Eli Lilly");
-        dataCommand.Parameters.AddWithValue("@Brands", "Trulicity, Verzenio, Emgality");
-        dataCommand.ExecuteNonQuery();
+        var seedRepresentativesString = _config["SeedRepresentatives"];
+        var seedRepresentatives = false;
+        if (!string.IsNullOrEmpty(seedRepresentativesString))
+            seedRepresentatives = Convert.ToBoolean(seedRepresentativesString);
 
-        using var dataCommand2 = new SqliteCommand("INSERT INTO Representatives (Name, Email, CellPhone, Role, Company, Brands) values (@Name, @Email, @CellPhone, @Role, @Company, @Brands);", _connection);
-        dataCommand2.Parameters.AddWithValue("@Name", "Terry Lawson");
-        dataCommand2.Parameters.AddWithValue("@CellPhone", "(917) 446-0087");
-        dataCommand2.Parameters.AddWithValue("@Email", "Terry@Bayer.com");
-        dataCommand2.Parameters.AddWithValue("@Role", "Sales Representative");
-        dataCommand2.Parameters.AddWithValue("@Company", "Bayer");
-        dataCommand2.Parameters.AddWithValue("@Brands", "Glucobay, Adalat, Adempas");
-        dataCommand2.ExecuteNonQuery();
+        if (seedRepresentatives)
+        {
+            using var dataCommand = new SqliteCommand("INSERT INTO Representatives (Name, Email, CellPhone, Role, Company, Brands) values (@Name, @Email, @CellPhone, @Role, @Company, @Brands);", _connection);
+            dataCommand.Parameters.AddWithValue("@Name", "Shelly Smith");
+            dataCommand.Parameters.AddWithValue("@CellPhone", "(217) 436-2287");
+            dataCommand.Parameters.AddWithValue("@Email", "SSmith@lilly.com");
+            dataCommand.Parameters.AddWithValue("@Role", "Sales Representative");
+            dataCommand.Parameters.AddWithValue("@Company", "Eli Lilly");
+            dataCommand.Parameters.AddWithValue("@Brands", "Trulicity, Verzenio, Emgality");
+            dataCommand.ExecuteNonQuery();
 
-        using var dataCommand3 = new SqliteCommand("INSERT INTO Representatives (Name, Email, CellPhone, Role, Company, Brands) values (@Name, @Email, @CellPhone, @Role, @Company, @Brands);", _connection);
-        dataCommand3.Parameters.AddWithValue("@Name", "Emily Dickinson");
-        dataCommand3.Parameters.AddWithValue("@CellPhone", "(314) 501-3342");
-        dataCommand3.Parameters.AddWithValue("@Email", "Emily@Roche.com");
-        dataCommand3.Parameters.AddWithValue("@Role", "Sales Representative");
-        dataCommand3.Parameters.AddWithValue("@Company", "Roche");
-        dataCommand3.Parameters.AddWithValue("@Brands", "Hemlibre, Cellcept");
-        dataCommand3.ExecuteNonQuery();
+            using var dataCommand2 = new SqliteCommand("INSERT INTO Representatives (Name, Email, CellPhone, Role, Company, Brands) values (@Name, @Email, @CellPhone, @Role, @Company, @Brands);", _connection);
+            dataCommand2.Parameters.AddWithValue("@Name", "Terry Lawson");
+            dataCommand2.Parameters.AddWithValue("@CellPhone", "(917) 446-0087");
+            dataCommand2.Parameters.AddWithValue("@Email", "Terry@Bayer.com");
+            dataCommand2.Parameters.AddWithValue("@Role", "Sales Representative");
+            dataCommand2.Parameters.AddWithValue("@Company", "Bayer");
+            dataCommand2.Parameters.AddWithValue("@Brands", "Glucobay, Adalat, Adempas");
+            dataCommand2.ExecuteNonQuery();
 
+            using var dataCommand3 = new SqliteCommand("INSERT INTO Representatives (Name, Email, CellPhone, Role, Company, Brands) values (@Name, @Email, @CellPhone, @Role, @Company, @Brands);", _connection);
+            dataCommand3.Parameters.AddWithValue("@Name", "Emily Dickinson");
+            dataCommand3.Parameters.AddWithValue("@CellPhone", "(314) 501-3342");
+            dataCommand3.Parameters.AddWithValue("@Email", "Emily@Roche.com");
+            dataCommand3.Parameters.AddWithValue("@Role", "Sales Representative");
+            dataCommand3.Parameters.AddWithValue("@Company", "Roche");
+            dataCommand3.Parameters.AddWithValue("@Brands", "Hemlibre, Cellcept");
+            dataCommand3.ExecuteNonQuery();
+        }
     }
 
     /// <summary>
@@ -144,6 +153,8 @@ public class AppDbContext: IAppDbContext
     /// <returns>The added element.</returns>
     public async Task<Representative> AddRepresentative(Representative representative)
     {
+        // Set Date
+        representative.Created = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
         // Insert
         var insertSb = new StringBuilder("INSERT INTO Representatives");
         insertSb.Append("(Name, Email, CellPhone, Role, Company, Brands, CreatedBy, Created)");
@@ -158,7 +169,7 @@ public class AppDbContext: IAppDbContext
         insertCommand.Parameters.AddWithValue("@Brands", representative.Brands);
         insertCommand.Parameters.AddWithValue("@CreatedBy", representative.CreatedBy);
         insertCommand.Parameters.AddWithValue("@Created", representative.Created);
-        await insertCommand.ExecuteNonQueryAsync();
+        _ = await insertCommand.ExecuteNonQueryAsync();
 
         // Query for the last Id
         long lastId = 1;
@@ -179,6 +190,7 @@ public class AppDbContext: IAppDbContext
     /// <returns>The modified element.</returns>
     public async Task<Representative> UpdateRepresentative(Representative representative)
     {
+        representative.Modified = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
         // Update all values
         var updateSb = new StringBuilder("UPDATE Representatives SET ");
         updateSb.Append("Name = @Name, Email = @Email, CellPhone = @CellPhone, Role = @Role, ");
@@ -194,7 +206,7 @@ public class AppDbContext: IAppDbContext
         updateCommand.Parameters.AddWithValue("@Brands", representative.Brands);
         updateCommand.Parameters.AddWithValue("@ModifiedBy", representative.ModifiedBy);
         updateCommand.Parameters.AddWithValue("@Modified", representative.Modified);
-        var count = await updateCommand.ExecuteNonQueryAsync();
+        _ = await updateCommand.ExecuteNonQueryAsync();
 
         // Return the modified entry
         return await GetRepresentative(representative.Id);
@@ -210,7 +222,7 @@ public class AppDbContext: IAppDbContext
         // Delete
         using var deleteCommand = new SqliteCommand("DELETE FROM Representatives WHERE Id = @Id;", _connection);
         deleteCommand.Parameters.AddWithValue("@Id", id);
-        var count = await deleteCommand.ExecuteNonQueryAsync();
+        _ = await deleteCommand.ExecuteNonQueryAsync();
     }
 
     /// <summary>
@@ -226,7 +238,7 @@ public class AppDbContext: IAppDbContext
         insertCommand.Parameters.AddWithValue("@UserName", user.UserName);
         insertCommand.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
         insertCommand.Parameters.AddWithValue("@Created", user.Created);
-        await insertCommand.ExecuteNonQueryAsync();
+        _ = await insertCommand.ExecuteNonQueryAsync();
 
         // Return the last entry
         return user;

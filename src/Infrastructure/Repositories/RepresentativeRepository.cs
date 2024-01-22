@@ -26,62 +26,40 @@ public class RepresentativeRepository : IRepresentativeRepository
     /// <returns>List of Representatives.</returns>
     public async Task<List<Representative>> GetAll()
     {
-        var dummyList = new List<Representative>
-        {
-            new()
-            {
-                Name = "Shelly Smith",
-                CellPhone = "(217) 436-2287",
-                Email = "SSmith@lilly.com",
-                Role = "Sales Representative",
-                Company = "Eli Lilly",
-                Brands = "Trulicity, Verzenio, Emgality"
-            },
-            new()
-            {
-                Name = "Terry Lawson",
-                CellPhone = "(917) 446-0087",
-                Email = "Terry@Bayer.com",
-                Role = "Sales Representative",
-                Company = "Bayer",
-                Brands = "Glucobay, Adalat, Adempas"
-            },
-            new()
-            {
-                Name = "Emily Dickinson",
-                CellPhone = "(314) 501-3342",
-                Email = "Emily@Roche.com",
-                Role = "Sales Representative",
-                Company = "Roche",
-                Brands = "Hemlibre, Cellcept"
-            }
-        };
-        //return Task.FromResult<List<Representative>>(dummyList);
-
         return await _appDbContext.GetRepresentatives();
     }
 
+    /// <summary>
+    /// Add a Representative.
+    /// </summary>
+    /// <param name="representative">Representative entity.</param>
+    /// <returns>The persisted representative.</returns>
     public async Task<Representative> Add(Representative representative)
     {
-        // Gather missing information (Created Date and whom)
-        representative.Created = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
+        // Gather missing information (Whom)
         representative.CreatedBy = "TBD";
-        // Store the entity
         return await _appDbContext.AddRepresentative(representative);
     }
 
+    /// <summary>
+    /// Update a representative.
+    /// </summary>
+    /// <param name="representative">Representative to update.</param>
+    /// <returns>Updated representative.</returns>
     public async Task<Representative> Update(Representative representative)
     {
-        // Gather missing information (Updated Date and whom)
-        representative.Modified = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
+        // Gather missing information (Whom)
         representative.ModifiedBy = "TBD";
-        // Update the entity
         return await _appDbContext.UpdateRepresentative(representative);
     }
 
+    /// <summary>
+    /// Remove a representative from storage.
+    /// </summary>
+    /// <param name="representativeId">Representative Id.</param>
+    /// <returns>Task.</returns>
     public async Task Delete(int representativeId)
     {
-        // Remove the entity
         await _appDbContext.DeleteRepresentative(representativeId);
     }
 }
