@@ -113,7 +113,7 @@ public class AppDbContext: IAppDbContext
     /// <returns>Representative.</returns>
     public async Task<Representative> GetRepresentative(long id)
     {
-        var result = new Representative();
+        var result = new Representative { Name = "Temp Name" };
         using var readCommand = new SqliteCommand("SELECT * FROM Representatives WHERE Id = @Id", _connection);
         readCommand.Parameters.AddWithValue("@Id", id);
         using var reader = await readCommand.ExecuteReaderAsync();

@@ -57,7 +57,8 @@ public class RepresentativeController : ControllerBase
     {
         try
         { 
-            return await _representativeService.Add(representativeDto);
+            var result = await _representativeService.Add(representativeDto);
+            return Ok(result);
         }
         catch
         {
@@ -106,7 +107,8 @@ public class RepresentativeController : ControllerBase
     {
         try
         {
-            return await _representativeService.Update(representativeDto);
+            var result = await _representativeService.Update(representativeDto);
+            return Ok(result);
         }
         catch
         {

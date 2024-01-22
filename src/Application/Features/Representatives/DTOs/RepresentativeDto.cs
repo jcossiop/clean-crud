@@ -17,8 +17,7 @@ public class RepresentativeDto
     /// <summary>
     /// Rep Name.
     /// </summary>
-    [Required]
-    public string? Name { get; set; }
+    public required string? Name { get; set; }
 
     /// <summary>
     /// Email.
