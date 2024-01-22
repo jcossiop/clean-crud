@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Text.RegularExpressions;
 
 namespace Domain.Representatives;
 
@@ -7,14 +7,12 @@ public class Representative
     /// <summary>
     /// Rep Id (internal).
     /// </summary>
-    [Key]
     public long Id { get; set; }
 
     /// <summary>
     /// Rep Name.
     /// </summary>
-    [Required]
-    public string? Name { get; set; }
+    public required string Name { get; set; }
 
     /// <summary>
     /// Email.
@@ -60,4 +58,19 @@ public class Representative
     /// Modified date.
     /// </summary>
     public long? Modified { get; set; }
+
+    /// <summary>
+    /// Check email format.
+    /// </summary>
+    /// <returns>True if valid.</returns>
+    public bool IsEmailValid()
+    {
+        if (Email != null)
+        {
+            string regex = @"^[^@\s]+@[^@\s]+\.(com|net|org|gov)$";
+            return Regex.IsMatch(Email, regex, RegexOptions.IgnoreCase);
+        }
+        else
+            return false;
+    }
 }
