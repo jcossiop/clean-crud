@@ -43,7 +43,8 @@ public static class RepresentativeMappings
             Email = representativeDto.Email,
             Role = representativeDto.Role,
             Company = representativeDto.Company,
-            Brands = representativeDto.Brands
+            Brands = representativeDto.Brands,
+            User = representativeDto.User
         };
     }
 }

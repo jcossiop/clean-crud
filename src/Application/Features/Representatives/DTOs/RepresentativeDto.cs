@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Application.Features.Representatives.DTOs;
 
@@ -43,5 +44,11 @@ public class RepresentativeDto
     /// Brands this Rep is in charge for.
     /// </summary>
     public string? Brands { get; set; }
+
+    /// <summary>
+    /// Temp field
+    /// </summary>
+    [JsonIgnore]
+    public string? User { get; set; }
 
 }

@@ -60,6 +60,11 @@ public class Representative
     public long? Modified { get; set; }
 
     /// <summary>
+    /// Temp field
+    /// </summary>
+    public string? User { get; set; }
+
+    /// <summary>
     /// Check email format.
     /// </summary>
     /// <returns>True if valid.</returns>

@@ -2,6 +2,7 @@
 using Application.Features.Representatives.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace WebApi.Controllers;
 
@@ -51,7 +52,6 @@ public class RepresentativeController : ControllerBase
     /// </summary>
     /// <param name="representativeDto">Representative to persist.</param>
     /// <returns>Stored Representative.</returns>
-    //[Authorize]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RepresentativeDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -59,7 +59,8 @@ public class RepresentativeController : ControllerBase
     public async Task<ActionResult<RepresentativeDto>> Add(RepresentativeDto representativeDto)
     {
         try
-        { 
+        {
+            representativeDto.User = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
             var result = await _representativeService.Add(representativeDto);
             return Ok(result);
         }
@@ -74,7 +75,6 @@ public class RepresentativeController : ControllerBase
     /// </summary>
     /// <param name="id">Id of the Representative to delete.</param>
     /// <returns>Task.</returns>
-    //[Authorize]
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -101,7 +101,6 @@ public class RepresentativeController : ControllerBase
     /// </summary>
     /// <param name="representativeDto">Representative to modify.</param>
     /// <returns>Modified Representative.</returns>
-    //[Authorize]
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RepresentativeDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -110,6 +109,7 @@ public class RepresentativeController : ControllerBase
     {
         try
         {
+            representativeDto.User = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
             var result = await _representativeService.Update(representativeDto);
             return Ok(result);
         }

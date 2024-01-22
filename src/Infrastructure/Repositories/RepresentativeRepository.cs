@@ -37,7 +37,7 @@ public class RepresentativeRepository : IRepresentativeRepository
     public async Task<Representative> Add(Representative representative)
     {
         // Gather missing information (Whom)
-        representative.CreatedBy = "TBD";
+        representative.CreatedBy = representative.User;
         return await _appDbContext.AddRepresentative(representative);
     }
 
@@ -49,7 +49,7 @@ public class RepresentativeRepository : IRepresentativeRepository
     public async Task<Representative> Update(Representative representative)
     {
         // Gather missing information (Whom)
-        representative.ModifiedBy = "TBD";
+        representative.ModifiedBy = representative.User;
         return await _appDbContext.UpdateRepresentative(representative);
     }
 
