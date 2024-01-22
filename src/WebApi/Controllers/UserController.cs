@@ -31,7 +31,7 @@ public class UserController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<UserDto>> Add(UserDto userDto)
+    public async Task<ActionResult<UserDto>> Register(UserDto userDto)
     {
         try
         {
