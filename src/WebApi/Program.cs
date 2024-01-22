@@ -30,6 +30,7 @@ builder.Services.AddSwaggerGen(options =>
         Title = "Clean Architecture API",
         Description = "Clean Architecture Sample API",
     });
+
     // Pull documentation from XML
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));

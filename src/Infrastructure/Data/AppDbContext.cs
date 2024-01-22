@@ -62,14 +62,15 @@ public class AppDbContext: IAppDbContext
         using var usersCreateTable = new SqliteCommand(usersTableSb.ToString(), _connection);
         usersCreateTable.ExecuteReader();
 
-        var seedRepresentativesString = _config["SeedRepresentatives"];
-        var seedRepresentatives = false;
-        if (!string.IsNullOrEmpty(seedRepresentativesString))
-            seedRepresentatives = Convert.ToBoolean(seedRepresentativesString);
+        var seedDataString = _config["SeedData"];
+        var seedData = false;
+        if (!string.IsNullOrEmpty(seedDataString))
+            seedData = Convert.ToBoolean(seedDataString);
 
-        if (seedRepresentatives)
+        if (seedData)
         {
-            using var dataCommand = new SqliteCommand("INSERT INTO Representatives (Name, Email, CellPhone, Role, Company, Brands) values (@Name, @Email, @CellPhone, @Role, @Company, @Brands);", _connection);
+            var repString = "INSERT INTO Representatives (Name, Email, CellPhone, Role, Company, Brands) values (@Name, @Email, @CellPhone, @Role, @Company, @Brands);";
+            using var dataCommand = new SqliteCommand(repString, _connection);
             dataCommand.Parameters.AddWithValue("@Name", "Shelly Smith");
             dataCommand.Parameters.AddWithValue("@CellPhone", "(217) 436-2287");
             dataCommand.Parameters.AddWithValue("@Email", "SSmith@lilly.com");
@@ -78,7 +79,7 @@ public class AppDbContext: IAppDbContext
             dataCommand.Parameters.AddWithValue("@Brands", "Trulicity, Verzenio, Emgality");
             dataCommand.ExecuteNonQuery();
 
-            using var dataCommand2 = new SqliteCommand("INSERT INTO Representatives (Name, Email, CellPhone, Role, Company, Brands) values (@Name, @Email, @CellPhone, @Role, @Company, @Brands);", _connection);
+            using var dataCommand2 = new SqliteCommand(repString, _connection);
             dataCommand2.Parameters.AddWithValue("@Name", "Terry Lawson");
             dataCommand2.Parameters.AddWithValue("@CellPhone", "(917) 446-0087");
             dataCommand2.Parameters.AddWithValue("@Email", "Terry@Bayer.com");
@@ -87,7 +88,7 @@ public class AppDbContext: IAppDbContext
             dataCommand2.Parameters.AddWithValue("@Brands", "Glucobay, Adalat, Adempas");
             dataCommand2.ExecuteNonQuery();
 
-            using var dataCommand3 = new SqliteCommand("INSERT INTO Representatives (Name, Email, CellPhone, Role, Company, Brands) values (@Name, @Email, @CellPhone, @Role, @Company, @Brands);", _connection);
+            using var dataCommand3 = new SqliteCommand(repString, _connection);
             dataCommand3.Parameters.AddWithValue("@Name", "Emily Dickinson");
             dataCommand3.Parameters.AddWithValue("@CellPhone", "(314) 501-3342");
             dataCommand3.Parameters.AddWithValue("@Email", "Emily@Roche.com");
@@ -95,6 +96,13 @@ public class AppDbContext: IAppDbContext
             dataCommand3.Parameters.AddWithValue("@Company", "Roche");
             dataCommand3.Parameters.AddWithValue("@Brands", "Hemlibre, Cellcept");
             dataCommand3.ExecuteNonQuery();
+
+            using var dataCommand4 = new SqliteCommand("INSERT INTO Users (UserName, PasswordHash, Created) VALUES (@UserName, @PasswordHash, @Created)", _connection);
+            dataCommand4.Parameters.AddWithValue("@UserName", "admin");
+            dataCommand4.Parameters.AddWithValue("@PasswordHash", "admin");
+            dataCommand4.Parameters.AddWithValue("@Created", ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds());
+            dataCommand4.ExecuteNonQuery();
+
         }
     }
 
@@ -253,8 +261,8 @@ public class AppDbContext: IAppDbContext
     public async Task<LoginResult> LoginUser(User user)
     {
         // Check with DB
-        using var queryCommand = new SqliteCommand("SELECT COUNT(*) FROM Users WHERE UserName = @UserName AND PasswordHash = @PasswordHash;", _connection);
-        queryCommand.Parameters.AddWithValue("@UserName", user.UserName);
+        using var queryCommand = new SqliteCommand("SELECT COUNT(*) FROM Users WHERE UPPER(UserName) = @UserName AND PasswordHash = @PasswordHash;", _connection);
+        queryCommand.Parameters.AddWithValue("@UserName", user.UserName.ToUpper());
         queryCommand.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
         // Query for the last Id
         long count = 0;
@@ -270,7 +278,8 @@ public class AppDbContext: IAppDbContext
         else
             return new LoginResult
             {
-                Success = false
+                Success = false,
+                Message = "Failed to login."
             };
     }
 }

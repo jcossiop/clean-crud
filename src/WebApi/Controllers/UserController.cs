@@ -39,13 +39,16 @@ public class UserController : ControllerBase
     /// <summary>
     /// Login a User.
     /// </summary>
-    /// <param name="userDto">User to login.</param>
+    /// <param name="userDto">User info.</param>
     /// <returns>Login Status.</returns>
-    [HttpPost]
+    [HttpPost("login")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResult))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<LoginResult>> Login(UserDto userDto)
     {
+        if (userDto == null || string.IsNullOrEmpty(userDto.UserName) || string.IsNullOrEmpty(userDto.PasswordHash))
+            return BadRequest("Invalid parameters.");
         return await _userService.Login(userDto);
     }
 }
