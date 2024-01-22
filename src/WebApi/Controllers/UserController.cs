@@ -61,6 +61,7 @@ public class UserController : ControllerBase
     [HttpPost("login")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResult))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<LoginResult>> Login(UserDto userDto)
     {
@@ -70,12 +71,15 @@ public class UserController : ControllerBase
         try
         {
             var response = await _userService.Login(userDto);
-            // Add token
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes("144bc73a-1c0d-41b3-8104-e1fc43db45c9");
-            TimeSpan tokenLifeSpan = TimeSpan.FromHours(8);
 
-            var claims = new List<Claim>
+            if (response.Success)
+            {
+                // Add token
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes("144bc73a-1c0d-41b3-8104-e1fc43db45c9");
+                TimeSpan tokenLifeSpan = TimeSpan.FromHours(8);
+
+                var claims = new List<Claim>
             {
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new(JwtRegisteredClaimNames.Sub, userDto.UserName),
@@ -83,21 +87,24 @@ public class UserController : ControllerBase
                 new("userid", userDto.UserName)
             };
 
-            var tokenDescriptor = new SecurityTokenDescriptor
-            { 
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.Add(tokenLifeSpan),
-                Issuer = "https://id.sammple.com",
-                Audience = "https://reps.sammple.com",
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
-            };
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(claims),
+                    Expires = DateTime.UtcNow.Add(tokenLifeSpan),
+                    Issuer = "https://id.sammple.com",
+                    Audience = "https://reps.sammple.com",
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
+                };
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var jwt = tokenHandler.WriteToken(token);
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                var jwt = tokenHandler.WriteToken(token);
 
-            response.Token = jwt;
+                response.Token = jwt;
 
-            return response;
+                return response;
+            }
+            else
+                return Unauthorized("Not able to login.");
         }
         catch (Exception ex)
         {
