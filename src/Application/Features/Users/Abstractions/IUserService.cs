@@ -11,7 +11,14 @@ public interface IUserService
     /// <summary>
     /// Add a User.
     /// </summary>
-    /// <param name="user">User entity.</param>
+    /// <param name="userDto">User entity.</param>
     /// <returns>The persisted user.</returns>
-    Task<UserDto> Add(UserDto user);
+    Task<UserDto> Add(UserDto userDto);
+
+    /// <summary>
+    /// Login a User.
+    /// </summary>
+    /// <param name="userDto">User entity.</param>
+    /// <returns>Login State.</returns>
+    Task<LoginResult> Login(UserDto userDto);
 }

@@ -23,11 +23,21 @@ public class UserService: IUserService
     /// <summary>
     /// Add a user.
     /// </summary>
-    /// <param name="user">Entity to persist.</param>
+    /// <param name="userDto">Entity to persist.</param>
     /// <returns>Persited entity.</returns>
-    public async Task<UserDto> Add(UserDto user)
+    public async Task<UserDto> Add(UserDto userDto)
     {
-        var output = await _repository.Add(user.ToUser());
+        var output = await _repository.Add(userDto.ToUser());
         return output.ToUserDto();
+    }
+
+    /// <summary>
+    /// Login a User.
+    /// </summary>
+    /// <param name="userDto">User entity.</param>
+    /// <returns>Login State.</returns>
+    public async Task<LoginResult> Login(UserDto userDto)
+    {
+        return await _repository.Login(userDto.ToUser());
     }
 }

@@ -1,4 +1,5 @@
-﻿using Domain.Representatives;
+﻿using Application.Features.Users.Abstractions;
+using Domain.Representatives;
 using Domain.Users;
 
 namespace Application.Common.Interfaces;
@@ -41,5 +42,12 @@ public interface IAppDbContext
     /// <param name="user">The element to add.</param>
     /// <returns>The added element.</returns>
     public Task<User> AddUser(User user);
+
+    /// <summary>
+    /// Login user.
+    /// </summary>
+    /// <param name="user">User details.</param>
+    /// <returns>Login Status.</returns>
+    public Task<LoginResult> LoginUser(User user);
 
 }

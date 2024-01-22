@@ -29,4 +29,14 @@ public class UserRepository : IUserRepository
     {
         return await _appDbContext.AddUser(user);
     }
+
+    /// <summary>
+    /// Login a User.
+    /// </summary>
+    /// <param name="user">User entity.</param>
+    /// <returns>Login State.</returns>
+    public async Task<LoginResult> Login(User user)
+    {
+        return await _appDbContext.LoginUser(user);
+    }
 }

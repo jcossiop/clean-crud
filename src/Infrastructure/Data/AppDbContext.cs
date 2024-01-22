@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interfaces;
+using Application.Features.Users.Abstractions;
 using Domain.Representatives;
 using Domain.Users;
 using Microsoft.Data.Sqlite;
@@ -13,7 +14,7 @@ namespace Infrastructure.Data;
 public class AppDbContext: IAppDbContext
 {
     private SqliteConnection? _connection;
-    private IConfiguration _config;
+    private readonly IConfiguration _config;
 
     /// <summary>
     /// Initialize the memory database on constructor
@@ -242,6 +243,35 @@ public class AppDbContext: IAppDbContext
 
         // Return the last entry
         return user;
+    }
+
+    /// <summary>
+    /// Login user.
+    /// </summary>
+    /// <param name="user">User details.</param>
+    /// <returns>Login Status.</returns>
+    public async Task<LoginResult> LoginUser(User user)
+    {
+        // Check with DB
+        using var queryCommand = new SqliteCommand("SELECT COUNT(*) FROM Users WHERE UserName = @UserName AND PasswordHash = @PasswordHash;", _connection);
+        queryCommand.Parameters.AddWithValue("@UserName", user.UserName);
+        queryCommand.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
+        // Query for the last Id
+        long count = 0;
+        using var reader = await queryCommand.ExecuteReaderAsync();
+        if (reader.Read())
+            count = reader.GetInt64(0);
+        if (count == 1)
+            return new LoginResult
+            {
+                Success = true,
+                Message = "Successful login."
+            };
+        else
+            return new LoginResult
+            {
+                Success = false
+            };
     }
 }
 

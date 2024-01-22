@@ -35,4 +35,17 @@ public class UserController : ControllerBase
     {
         return await _userService.Add(userDto);
     }
+
+    /// <summary>
+    /// Login a User.
+    /// </summary>
+    /// <param name="userDto">User to login.</param>
+    /// <returns>Login Status.</returns>
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResult))]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<LoginResult>> Login(UserDto userDto)
+    {
+        return await _userService.Login(userDto);
+    }
 }

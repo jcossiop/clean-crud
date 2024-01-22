@@ -17,16 +17,16 @@ public interface IRepresentativeService
     /// <summary>
     /// Add a Representative.
     /// </summary>
-    /// <param name="representative">Representative entity.</param>
+    /// <param name="representativeDto">Representative entity.</param>
     /// <returns>The persisted representative.</returns>
-    Task<RepresentativeDto> Add(RepresentativeDto representative);
+    Task<RepresentativeDto> Add(RepresentativeDto representativeDto);
 
     /// <summary>
     /// Update (patch) a representative.
     /// </summary>
-    /// <param name="representative">Representative to update.</param>
+    /// <param name="representativeDto">Representative to update.</param>
     /// <returns>Updated representative.</returns>
-    Task<RepresentativeDto> Update(RepresentativeDto representative);
+    Task<RepresentativeDto> Update(RepresentativeDto representativeDto);
 
     /// <summary>
     /// Remove a representative from storage.

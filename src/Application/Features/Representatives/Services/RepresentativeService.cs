@@ -34,11 +34,11 @@ public class RepresentativeService : IRepresentativeService
     /// <summary>
     /// Add a Representative.
     /// </summary>
-    /// <param name="representative">Entity to persist.</param>
+    /// <param name="representativeDto">Entity to persist.</param>
     /// <returns>Persited entity.</returns>
-    public async Task<RepresentativeDto> Add(RepresentativeDto representative)
+    public async Task<RepresentativeDto> Add(RepresentativeDto representativeDto)
     {
-        var output = await _repository.Add(representative.ToRepresentative());
+        var output = await _repository.Add(representativeDto.ToRepresentative());
         return output.ToRepresentativeDto();
     }
 
@@ -55,11 +55,11 @@ public class RepresentativeService : IRepresentativeService
     /// <summary>
     /// Update a Representative.
     /// </summary>
-    /// <param name="representative">Entity to Update.</param>
+    /// <param name="representativeDto">Entity to Update.</param>
     /// <returns>Updated entity.</returns>
-    public async Task<RepresentativeDto> Update(RepresentativeDto representative)
+    public async Task<RepresentativeDto> Update(RepresentativeDto representativeDto)
     {
-        var output = await _repository.Update(representative.ToRepresentative());
+        var output = await _repository.Update(representativeDto.ToRepresentative());
         return output.ToRepresentativeDto();
     }
 }
