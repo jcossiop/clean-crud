@@ -41,7 +41,7 @@ public interface IAppDbContext
     /// </summary>
     /// <param name="user">The element to add.</param>
     /// <returns>The added element.</returns>
-    public Task<User> AddUser(User user);
+    public Task<User?> AddUser(User user);
 
     /// <summary>
     /// Login user.

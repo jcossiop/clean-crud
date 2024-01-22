@@ -25,10 +25,13 @@ public class UserService: IUserService
     /// </summary>
     /// <param name="userDto">Entity to persist.</param>
     /// <returns>Persited entity.</returns>
-    public async Task<UserDto> Add(UserDto userDto)
+    public async Task<UserDto?> Add(UserDto userDto)
     {
         var output = await _repository.Add(userDto.ToUser());
-        return output.ToUserDto();
+        if (output != null)
+            return output.ToUserDto();
+        else
+            return null;
     }
 
     /// <summary>

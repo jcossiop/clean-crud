@@ -1,6 +1,5 @@
 ﻿using Application.Features.Representatives.Abstractions;
 using Application.Features.Representatives.DTOs;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
@@ -33,8 +32,15 @@ public class RepresentativeController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<List<RepresentativeDto>>> GetAll()
     {
-        var representativeList = await _representativeService.GetAll();
-        return Ok(representativeList);
+        try
+        {
+            var representativeList = await _representativeService.GetAll();
+            return Ok(representativeList);
+        }
+        catch
+        {
+            return Problem("Internal server error.");
+        }
     }
 
     /// <summary>
@@ -49,7 +55,14 @@ public class RepresentativeController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<RepresentativeDto>> Add(RepresentativeDto representativeDto)
     {
-        return await _representativeService.Add(representativeDto);
+        try
+        { 
+            return await _representativeService.Add(representativeDto);
+        }
+        catch
+        {
+            return Problem("Internal server error.");
+        }
     }
 
     /// <summary>
@@ -68,9 +81,15 @@ public class RepresentativeController : ControllerBase
         if (id < 0)
             return BadRequest("Invalid Representative Id.");
 
-        await _representativeService.Delete(id);
-
-        return NoContent();
+        try 
+        { 
+            await _representativeService.Delete(id);
+            return NoContent();
+        }
+        catch
+        {
+            return Problem("Internal server error.");
+        }
     }
 
     /// <summary>
@@ -85,6 +104,14 @@ public class RepresentativeController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<RepresentativeDto>> Update(RepresentativeDto representativeDto)
     {
-        return await _representativeService.Update(representativeDto);
+        try
+        {
+            return await _representativeService.Update(representativeDto);
+        }
+        catch
+        {
+            return Problem("Internal server error.");
+        }
+
     }
 }

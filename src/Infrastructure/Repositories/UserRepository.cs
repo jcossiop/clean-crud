@@ -25,7 +25,7 @@ public class UserRepository : IUserRepository
     /// </summary>
     /// <param name="user">User to persist.</param>
     /// <returns>Persited user.</returns>
-    public async Task<User> Add(User user)
+    public async Task<User?> Add(User user)
     {
         return await _appDbContext.AddUser(user);
     }

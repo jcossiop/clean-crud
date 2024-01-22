@@ -239,8 +239,21 @@ public class AppDbContext: IAppDbContext
     /// </summary>
     /// <param name="user">The element to add.</param>
     /// <returns>The added element.</returns>
-    public async Task<User> AddUser(User user)
+    public async Task<User?> AddUser(User user)
     {
+        // Check if user exists
+        using var queryCommand = new SqliteCommand("SELECT COUNT(*) FROM Users WHERE UPPER(UserName) = @UserName;", _connection);
+        queryCommand.Parameters.AddWithValue("@UserName", user.UserName.ToUpper());
+        // Query for the count
+        long count = 0;
+        using var reader = await queryCommand.ExecuteReaderAsync();
+        if (reader.Read())
+            count = reader.GetInt64(0);
+        if (count > 0)
+        {
+            return null;
+        }
+
         user.Created = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
         // Insert
         using var insertCommand = new SqliteCommand("INSERT INTO Users (UserName, PasswordHash, Created) VALUES (@UserName, @PasswordHash, @Created)", _connection);
@@ -264,7 +277,7 @@ public class AppDbContext: IAppDbContext
         using var queryCommand = new SqliteCommand("SELECT COUNT(*) FROM Users WHERE UPPER(UserName) = @UserName AND PasswordHash = @PasswordHash;", _connection);
         queryCommand.Parameters.AddWithValue("@UserName", user.UserName.ToUpper());
         queryCommand.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
-        // Query for the last Id
+        // Query for the count
         long count = 0;
         using var reader = await queryCommand.ExecuteReaderAsync();
         if (reader.Read())

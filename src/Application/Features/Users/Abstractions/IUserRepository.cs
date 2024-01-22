@@ -12,7 +12,7 @@ public interface IUserRepository
     /// </summary>
     /// <param name="user">User entity.</param>
     /// <returns>The persisted user.</returns>
-    Task<User> Add(User user);
+    Task<User?> Add(User user);
 
     /// <summary>
     /// Login a User.

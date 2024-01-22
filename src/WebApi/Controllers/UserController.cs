@@ -33,7 +33,19 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<UserDto>> Add(UserDto userDto)
     {
-        return await _userService.Add(userDto);
+        try
+        {
+            var response = await _userService.Add(userDto);
+            if (response == null)
+            {
+                return Problem("Unable to add a user at this moment.");
+            }
+            return Ok(response);
+        }
+        catch
+        {
+            return Problem("Unable to add a user at this moment.");
+        }
     }
 
     /// <summary>
@@ -49,6 +61,14 @@ public class UserController : ControllerBase
     {
         if (userDto == null || string.IsNullOrEmpty(userDto.UserName) || string.IsNullOrEmpty(userDto.PasswordHash))
             return BadRequest("Invalid parameters.");
-        return await _userService.Login(userDto);
+
+        try
+        {
+            return await _userService.Login(userDto);
+        }
+        catch
+        {
+            return Problem("Internal server error.");
+        }
     }
 }
