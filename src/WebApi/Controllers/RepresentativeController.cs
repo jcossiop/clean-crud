@@ -1,5 +1,6 @@
 ﻿using Application.Features.Representatives.Abstractions;
 using Application.Features.Representatives.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
@@ -7,6 +8,7 @@ namespace WebApi.Controllers;
 /// <summary>
 /// Controller for all Representative methods.
 /// </summary>
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
@@ -27,6 +29,7 @@ public class RepresentativeController : ControllerBase
     /// Get all the representatives.
     /// </summary>
     /// <returns>List of representatives</returns>
+    [AllowAnonymous]
     [HttpGet(Name = "GetAll")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<RepresentativeDto>))]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

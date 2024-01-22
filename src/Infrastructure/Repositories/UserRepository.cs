@@ -37,6 +37,7 @@ public class UserRepository : IUserRepository
     /// <returns>Login State.</returns>
     public async Task<LoginResult> Login(User user)
     {
-        return await _appDbContext.LoginUser(user);
+        var response = await _appDbContext.LoginUser(user);
+        return response;
     }
 }

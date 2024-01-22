@@ -1,6 +1,11 @@
 ﻿using Application.Features.Users.Abstractions;
 using Application.Features.Users.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Validations;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace WebApi.Controllers;
 
@@ -64,9 +69,37 @@ public class UserController : ControllerBase
 
         try
         {
-            return await _userService.Login(userDto);
+            var response = await _userService.Login(userDto);
+            // Add token
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes("144bc73a-1c0d-41b3-8104-e1fc43db45c9");
+            TimeSpan tokenLifeSpan = TimeSpan.FromHours(8);
+
+            var claims = new List<Claim>
+            {
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new(JwtRegisteredClaimNames.Sub, userDto.UserName),
+                new(JwtRegisteredClaimNames.Email, userDto.UserName),
+                new("userid", userDto.UserName)
+            };
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            { 
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.Add(tokenLifeSpan),
+                Issuer = "https://id.sammple.com",
+                Audience = "https://reps.sammple.com",
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var jwt = tokenHandler.WriteToken(token);
+
+            response.Token = jwt;
+
+            return response;
         }
-        catch
+        catch (Exception ex)
         {
             return Problem("Internal server error.");
         }

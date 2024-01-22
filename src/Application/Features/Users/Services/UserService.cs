@@ -41,6 +41,7 @@ public class UserService: IUserService
     /// <returns>Login State.</returns>
     public async Task<LoginResult> Login(UserDto userDto)
     {
-        return await _repository.Login(userDto.ToUser());
+        var response = await _repository.Login(userDto.ToUser());
+        return response;
     }
 }
