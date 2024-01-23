@@ -1,7 +1,155 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+@using CleanCrud.App.Contracts
+@using CleanCrud.App.Model
+@using CleanCrud.App.Services
+@using Microsoft.AspNetCore.Components.QuickGrid
 
-<h1>Hello, world!</h1>
+<PageTitle>Representatives</PageTitle>
 
-Welcome to your new app.
+<h2>This page displays the registered representatives.</h2>
+
+
+@if (_isAuthenticated)
+{
+    <button class="btn-primary" @onclick="@(() => SignUp())">Sign Up</button>
+    <button class="btn-primary" @onclick="@(() => SignOut())">Sign Out</button>
+    <button class="btn-primary" @onclick="@(() => AddRep())">+ Add Representative</button>
+}
+else
+{
+    <button class="btn-primary" @onclick="@(() => SignUp())">Sign Up</button>
+    <button class="btn-primary" @onclick="@(() => SignIn())">Sign In</button>
+}
+
+<!--Quick Grid -->
+<div class="container col-lg-12 align-self-center custom-table">
+    <div class="row">
+        <div class="col-12">
+            <div class="grid table" tabindex="-1">
+                <QuickGrid ItemsProvider="@representativeGridProvider" @ref="representativeGrid">
+                    <PropertyColumn Title="Id" Property="@(c => c.Id)" Align="Align.Right" />
+                    <PropertyColumn Title="Name" Property="@(c => c.Name)" />
+                    <PropertyColumn Title="Cell Phone" Property="@(c => c.CellPhone)" />
+                    <PropertyColumn Title="Email" Property="@(c => c.Email)"  />
+                    <PropertyColumn Title="Role" Property="@(c => c.Role)"  />
+                    <PropertyColumn Title="Company" Property="@(c => c.Company)"  />
+                    <PropertyColumn Title="Brands" Property="@(c => c.Brands)" />
+                    @if (_isAuthenticated)
+                    {
+                        <TemplateColumn Title="Actions">
+                            <button class="btn-primary" @onclick="@(() => UpdateRep(context))">Update</button>
+                            &nbsp; &nbsp;
+                            <button class="btn-primary" @onclick="@(() => DeleteRep(context))">Delete</button>
+                        </TemplateColumn>
+                    }
+                </QuickGrid>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Inject]
+    private NavigationManager? NavManager { get; set; }
+    [Inject]
+    public IRepresentativeDataService RepresentativeDataService { get; set; }
+    [Inject]
+    ProtectedSessionStorage? ProtectedSessionStore { get; set; } // To allow session storage 
+
+    QuickGrid<RepresentativeDto>? representativeGrid;
+    GridItemsProvider<RepresentativeDto>? representativeGridProvider;
+
+    bool _isAuthenticated;
+    private ProtectedBrowserStorageResult<SecurityInfo> _securityInfo;
+
+    /// <summary>
+    /// Method invoked when the component has received parameters from its parent in the render tree, and the incoming values have been assigned to properties.
+    /// </summary>
+    /// <returns>Task</returns>
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            _securityInfo = await ProtectedSessionStore.GetAsync<SecurityInfo>("SecurityInfo");
+            if (_securityInfo.Value != null && !string.IsNullOrEmpty(_securityInfo.Value.Token))
+                _isAuthenticated = true;
+            else
+                _isAuthenticated = false;
+        }
+        catch
+        {
+            // Nothing to do here
+        }
+    }
+
+    /// <summary>
+    /// Add as user.
+    /// </summary>
+    async Task SignUp()
+    {
+        NavManager.NavigateTo($"user/register");
+    }
+
+    /// <summary>
+    /// Login.
+    /// </summary>
+    async Task SignIn()
+    {
+        NavManager.NavigateTo($"user/login");
+    }
+
+    /// <summary>
+    /// Logout.
+    /// </summary>
+    async Task SignOut()
+    {
+        if (_securityInfo.Value != null)
+            _securityInfo.Value.Token = "";
+        _isAuthenticated = false;
+    }
+
+    /// <summary>
+    /// Add representative
+    /// </summary>
+    async Task AddRep()
+    {
+        NavManager.NavigateTo($"representative/add");
+    }
+
+    /// <summary>
+    /// Update representative
+    /// </summary>
+    /// <param name="r">Representative Entity</param>
+    async Task UpdateRep(RepresentativeDto r)
+    {
+        NavManager.NavigateTo($"representative/update/{r.Id}");
+    }
+
+    /// <summary>
+    /// Delete Representative
+    /// </summary>
+    /// <param name="r">Representative Entity</param>
+    async Task DeleteRep(RepresentativeDto r)
+    {
+        // Delete representative
+        await RepresentativeDataService.DeleteRepresentative(r.Id);
+        // Trigger a refresh
+        NavManager.NavigateTo(NavManager.Uri, true);
+    }
+
+    /// <summary>
+    /// Method invoked when the component is ready to start, having received its initial parameters from its parent in the render tree
+    /// </summary>
+    protected override void OnInitialized()
+    {
+        // Define the GridItemsProvider. Its job is to convert QuickGrid's GridItemsProviderRequest into a query against
+        // an arbitrary data source. 
+        representativeGridProvider = async req =>
+            {
+                var response = await RepresentativeDataService.GetAllRepresentatives();
+                return GridItemsProviderResult.From<RepresentativeDto>(items: response, totalItemCount: 0);
+            };
+    }
+}

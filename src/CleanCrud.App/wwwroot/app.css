@@ -49,3 +49,23 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+
+.login-box {
+    width: 300px;
+    height: auto;
+    margin: auto auto;
+}
+
+    .login-box .form-control {
+        height: 55px;
+    }
+
+    .login-box .btn-primary {
+        width: 100%;
+        font-size: 12px;
+        height: 58px;
+        font-weight: 600;
+        text-decoration: none;
+        line-height: 58px;
+    }

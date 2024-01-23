@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanCrud.Domain.UnitTests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanCrud.Controller.UnitTests", "tests\CleanCrud.Controller.UnitTests\CleanCrud.Controller.UnitTests.csproj", "{615B9AC3-40C4-4714-8783-2B68B906A5DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanCrud.App", "src\CleanCrud.App\CleanCrud.App.csproj", "{BC6303B5-2308-416C-A6D0-0BFE45E10BFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanCrud.App", "src\CleanCrud.App\CleanCrud.App.csproj", "{BC6303B5-2308-416C-A6D0-0BFE45E10BFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

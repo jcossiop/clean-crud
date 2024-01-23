@@ -1,0 +1,30 @@
+﻿@page "/user/login"
+@using CleanCrud.App.Model
+<PageTitle>Login</PageTitle>
+
+<h3>Login</h3>
+
+<div class="col align-self-center">
+    <form class="login-box text-center">
+        <input type="email" class="form-control" placeholder="Username (email)">
+        <input type="password" class="form-control" placeholder="Password">
+        <button class="btn-primary" @onclick="@(() => LoginUser())">SIGN IN</button>
+    </form>
+</div>
+
+@code {
+    [Inject]
+    private NavigationManager? NavManager { get; set; }
+    [Inject]
+    private ProtectedSessionStorage? ProtectedSessionStore { get; set; } // To allow session storage of custom information
+
+    /// <summary>
+    /// Login.
+    /// </summary>
+    async Task LoginUser()
+    {
+        // Store our customer in the session storage to be used in the dashboard page
+        await ProtectedSessionStore.SetAsync("SecurityInfo", new SecurityInfo { Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkNTRmOTU2Yy05Yzk1LTQ1N2YtODQzYy1hZGNjNDdlNTIzNWUiLCJzdWIiOiJqY29zc2lvQHdmc2NvcnAuY29tIiwiZW1haWwiOiJqY29zc2lvQHdmc2NvcnAuY29tIiwidXNlcmlkIjoiamNvc3Npb0B3ZnNjb3JwLmNvbSIsIm5iZiI6MTcwNjA0MjgzMCwiZXhwIjoxNzA2MDcxNjMwLCJpYXQiOjE3MDYwNDI4MzAsImlzcyI6Imh0dHBzOi8vaWQuc2FtbXBsZS5jb20iLCJhdWQiOiJodHRwczovL3JlcHMuc2FtbXBsZS5jb20ifQ.CwLbCWaNQ3YMMnxdOPdAnyokB2ku40f5DhBNbXKSA3k" });
+        NavManager.NavigateTo("/", true);
+    }
+}
