@@ -2,26 +2,28 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "src\Domain\Domain.csproj", "{43C7B020-3ACE-45EC-97CA-2AEBF3EA4F31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanCrud.Domain", "src\CleanCrud.Domain\CleanCrud.Domain.csproj", "{43C7B020-3ACE-45EC-97CA-2AEBF3EA4F31}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{85367B98-DB05-4A9C-B202-0A9AB251476E}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "src\Application\Application.csproj", "{0050804B-F94D-4065-9BE8-3A56F8B2AB0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanCrud.Application", "src\CleanCrud.Application\CleanCrud.Application.csproj", "{0050804B-F94D-4065-9BE8-3A56F8B2AB0C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{6A99AD58-D62D-4B09-B533-CA8C65E4334D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanCrud.Infrastructure", "src\CleanCrud.Infrastructure\CleanCrud.Infrastructure.csproj", "{6A99AD58-D62D-4B09-B533-CA8C65E4334D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "src\WebApi\WebApi.csproj", "{6586267C-2BCE-4D98-97C0-5110D8AB5ADB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanCrud.WebApi", "src\CleanCrud.WebApi\CleanCrud.WebApi.csproj", "{6586267C-2BCE-4D98-97C0-5110D8AB5ADB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{73C8A073-8DD9-4B48-913F-D1132BD5B532}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{00613898-E355-44E9-B4F1-D098018236AC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.UnitTests", "tests\Domain.UnitTests\Domain.UnitTests.csproj", "{8BCAE52C-0747-4571-889D-E6EC1AFEA52B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanCrud.Domain.UnitTests", "tests\CleanCrud.Domain.UnitTests\CleanCrud.Domain.UnitTests.csproj", "{8BCAE52C-0747-4571-889D-E6EC1AFEA52B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controller.UnitTests", "tests\Controller.UnitTests\Controller.UnitTests.csproj", "{615B9AC3-40C4-4714-8783-2B68B906A5DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanCrud.Controller.UnitTests", "tests\CleanCrud.Controller.UnitTests\CleanCrud.Controller.UnitTests.csproj", "{615B9AC3-40C4-4714-8783-2B68B906A5DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanCrud.App", "src\CleanCrud.App\CleanCrud.App.csproj", "{BC6303B5-2308-416C-A6D0-0BFE45E10BFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{615B9AC3-40C4-4714-8783-2B68B906A5DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{615B9AC3-40C4-4714-8783-2B68B906A5DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{615B9AC3-40C4-4714-8783-2B68B906A5DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC6303B5-2308-416C-A6D0-0BFE45E10BFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC6303B5-2308-416C-A6D0-0BFE45E10BFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC6303B5-2308-416C-A6D0-0BFE45E10BFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC6303B5-2308-416C-A6D0-0BFE45E10BFB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,6 +70,7 @@ Global
 		{6586267C-2BCE-4D98-97C0-5110D8AB5ADB} = {00613898-E355-44E9-B4F1-D098018236AC}
 		{8BCAE52C-0747-4571-889D-E6EC1AFEA52B} = {73C8A073-8DD9-4B48-913F-D1132BD5B532}
 		{615B9AC3-40C4-4714-8783-2B68B906A5DF} = {73C8A073-8DD9-4B48-913F-D1132BD5B532}
+		{BC6303B5-2308-416C-A6D0-0BFE45E10BFB} = {00613898-E355-44E9-B4F1-D098018236AC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B7AC2BAE-03EE-41CD-B775-94DADF00B905}
